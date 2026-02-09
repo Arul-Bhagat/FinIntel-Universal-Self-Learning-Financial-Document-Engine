@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Upload Financial Documents</title>
+  <style>
+    :root {
+      --bg: #fdfbff;
+      --bg-accent: #f4f4ff;
+      --surface: #ffffff;
+      --surface-soft: #f9f5ff;
+      --border: #e4ddff;
+
+      --text-main: #111827;
+      --text-sub: #6b7280;
+
+      --primary: #6366f1;
+      --primary-soft: #a5b4fc;
+      --accent-pink: #f9a8d4;
+      --accent-mint: #6ee7b7;
+      --accent-peach: #fed7aa;
+      --accent-sky: #7dd3fc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #e0f2fe 0, transparent 55%),
+        radial-gradient(circle at top right, #fce7f3 0, transparent 50%),
+        radial-gradient(circle at bottom, #fef3c7 0, transparent 55%),
+        var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px 16px;
+    }
+
+    /* Centered title */
+    .site-title-wrap {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .site-title-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .site-title-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+    }
+
+    .site-title-main {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .site-title-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    /* Centered upload card */
+    .main-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 8px;
+    }
+
+    .upload-card {
+      width: 100%;
+      max-width: 640px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 26px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      box-shadow: 0 22px 50px rgba(148, 163, 184, 0.5);
+      padding: 22px 22px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .upload-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .upload-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .upload-sub {
+      margin-top: 4px;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: #f9fafb;
+      color: #4b5563;
+    }
+
+    .tags-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+      font-size: 11px;
+    }
+
+    .tag-pill {
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+    }
+
+    .tag-peach {
+      background: #ffedd5;
+      color: #c05621;
+    }
+
+    .tag-mint {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    /* Drop zone */
+    .dropzone {
+      margin-top: 4px;
+      border-radius: 22px;
+      border: 2px dashed rgba(148, 163, 184, 0.9);
+      background:
+        radial-gradient(circle at top left, #eef2ff 0, transparent 55%),
+        radial-gradient(circle at bottom right, #fef3c7 0, transparent 55%),
+        #f9fafb;
+      padding: 28px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s ease-out, box-shadow 0.15s ease-out, transform 0.1s ease-out;
+    }
+
+    .dropzone:hover {
+      border-color: #6366f1;
+      box-shadow: 0 14px 30px rgba(129, 140, 248, 0.35);
+      transform: translateY(-1px);
+    }
+
+    .drop-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, #a5b4fc, #f9a8d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: #f9fafb;
+      margin-bottom: 10px;
+      box-shadow: 0 10px 24px rgba(129, 140, 248, 0.6);
+    }
+
+    .drop-main {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .drop-sub {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .browse-btn {
+      margin-top: 10px;
+      padding: 7px 14px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.8);
+      background: #ffffff;
+      cursor: pointer;
+      color: #4b5563;
+    }
+
+    .browse-btn:hover {
+      background: #e5e7eb;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* Extra fields row */
+    .fields-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .field-group {
+      flex: 1;
+      min-width: 180px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 12px;
+    }
+
+    .field-label {
+      font-weight: 500;
+      color: #4b5563;
+    }
+
+    select,
+    input[type="text"] {
+      padding: 7px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      background: #f9fafb;
+      font-size: 12px;
+    }
+
+    select:focus,
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.25);
+    }
+
+    /* File list */
+    .file-list {
+      margin-top: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #f3f4ff;
+      font-size: 12px;
+    }
+
+    .file-list-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4px 0;
+    }
+
+    .file-name {
+      max-width: 70%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .file-meta {
+      font-size: 11px;
+      color: #6b7280;
+    }
+
+    /* CTA row */
+    .cta-row {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .ghost-btn {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      background: #ffffff;
+      color: #4b5563;
+      cursor: pointer;
+    }
+
+    .ghost-btn:hover {
+      background: #e5e7eb;
+    }
+.button-link {
+  font-size: 12px;
+      color: #111827;
+      text-decoration: none;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(209, 213, 219, 0.8);
+}
+
+.button-link:hover {
+  background-color: #fef3c7; /* Darker blue on hover */
+}
+
+    .primary-btn-submit {
+      padding: 7px 16px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: none;
+      background: #111827;
+      color: #f9fafb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .primary-btn-submit::after {
+      content: "➜";
+      font-size: 12px;
+    }
+
+    .primary-btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.35);
+    }
+
+    /* Footer hint */
+    .footer-hint {
+      text-align: center;
+      font-size: 11px;
+      color: #6b7280;
+      padding-bottom: 12px;
+    }
+
+    @media (max-width: 720px) {
+      .upload-card {
+        padding: 18px 16px 14px;
+      }
+      .upload-header {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Centered title instead of top bar -->
+  <div class="site-title-wrap">
+    
+    <h1 class="site-title-main">Universal Document Uploader</h1>
+    <p class="site-title-sub">
+      Drop in bank statements, payslips, invoices, and more — we’ll take care of the structure.
+    </p>
+  </div>
+
+  <!-- Main upload card -->
+  <main class="main-wrap">
+    <div class="upload-card">
+      <div class="upload-header">
+        <div>
+          <div class="upload-title">Drop your financial docs here</div>
+          <p class="upload-sub">
+            We’ll read the numbers, structure the data, and surface anything that needs a human eye.
+          </p>
+          <div class="tags-row">
+            <span class="tag-pill">Bank statements</span>
+            <span class="tag-pill">Payslips</span>
+            <span class="tag-pill tag-peach">Invoices</span>
+            <span class="tag-pill tag-mint">Agreements</span>
+            <span class="tag-pill">Others</span>
+          </div>
+        </div>
+        <div class="chip">
+          Auto‑classify & extract
+        </div>
+      </div>
+
+      <!-- Upload form (wire to backend later) -->
+      <form>
+        <!-- Dropzone -->
+        <label class="dropzone" for="file-input">
+          <div class="drop-icon">⬆</div>
+          <div class="drop-main">Drag & drop your files</div>
+          <div class="drop-sub">or click to browse from your device</div>
+          <button type="button" class="browse-btn">Browse files</button>
+          <input id="file-input" type="file" multiple />
+        </label>
+
+        <!-- Extra fields -->
+        <div class="fields-row">
+          <div class="field-group">
+            <label class="field-label">Document type (optional)</label>
+            <select>
+              <option value="">Let the system decide</option>
+              <option>Bank statement</option>
+              <option>Payslip</option>
+              <option>Invoice</option>
+              <option>Agreement</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label">Customer name (optional)</label>
+            <input type="text" placeholder="e.g., Rahul Sharma" />
+          </div>
+        </div>
+
+        <!-- File list (static placeholder) -->
+        <div class="file-list">
+          <div class="file-list-title">Files ready to process</div>
+          <div class="file-item">
+            <div class="file-name">statement_jan_mar_2025.pdf</div>
+            <div class="file-meta">1.2 MB • PDF</div>
+          </div>
+          <div class="file-item">
+            <div class="file-name">salary_slip_march_2025.png</div>
+            <div class="file-meta">540 KB • Image</div>
+          </div>
+        </div>
+
+        <!-- CTA row -->
+        <div class="cta-row">
+          <button type="button" class="ghost-btn">Clear list</button>
+           <a href="review.html" class="button-link">Start Analysis</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <div class="footer-hint">
+    Your uploads stay inside this workspace. Perfect for demos, pilots, and hackathon magic.
+  </div>
+</div>
+</body>
+</html>

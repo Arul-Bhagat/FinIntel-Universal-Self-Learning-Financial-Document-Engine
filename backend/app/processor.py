@@ -1,5 +1,7 @@
 import time
 from app.jobs import update_job_status, set_job_result, get_job
+from app.client import call_ocr_service, call_validation_service 
+
 
 def guess_doc_type(filename: str) -> str:
     name = filename.lower()
@@ -23,14 +25,28 @@ def process_document(job_id: str):
 
     doc_type = guess_doc_type(filename)
 
+    # OCR
+    ocr_result = call_ocr_service(job["path"])
+
+    # Knowledge object
+    knowledge_object = {
+        "doc_type": doc_type,
+        "entities": ocr_result.get("entities", {}),
+        "tables": ocr_result.get("tables", []),
+        "metadata": {
+            "filename": filename,
+            "job_id": job_id
+        }
+    }
+
+    # Validation
+    validation_result = call_validation_service(knowledge_object)
+
     result = {
         "doc_type": doc_type,
-        "entities": {},
-        "tables": [],
-        "validation_status": "NEEDS_REVIEW",
-        "debug": {
-            "filename_used_for_classification": filename
-        }
+        "entities": knowledge_object["entities"],
+        "tables": knowledge_object["tables"],
+        "validation": validation_result
     }
 
     set_job_result(job_id, result)

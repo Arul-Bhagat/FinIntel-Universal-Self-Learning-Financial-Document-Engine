@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Lock In Review</title>
+  <style>
+    :root {
+      --bg: #fdfbff;
+      --bg-accent: #f4f4ff;
+      --surface: #ffffff;
+      --surface-soft: #f9f5ff;
+      --border: #e4ddff;
+
+      --text-main: #111827;
+      --text-sub: #6b7280;
+
+      --primary: #6366f1;
+      --primary-soft: #a5b4fc;
+      --accent-pink: #f9a8d4;
+      --accent-mint: #6ee7b7;
+      --accent-peach: #fed7aa;
+      --accent-sky: #7dd3fc;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #e0f2fe 0, transparent 55%),
+        radial-gradient(circle at top right, #fce7f3 0, transparent 50%),
+        radial-gradient(circle at bottom, #fef3c7 0, transparent 55%),
+        var(--bg);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px 16px;
+    }
+
+    /* Title */
+    .site-title-wrap {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .site-title-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      font-size: 11px;
+      color: #6b7280;
+      margin-bottom: 8px;
+    }
+
+    .site-title-pill-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+    }
+
+    .site-title-main {
+      font-size: 26px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      background: linear-gradient(135deg, #4f46e5, #ec4899);
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 4px;
+    }
+
+    .site-title-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    /* Main card layout */
+    .main-wrap {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 8px;
+    }
+
+    .review-card {
+      width: 100%;
+      max-width: 720px;
+      background: rgba(255, 255, 255, 0.96);
+      border-radius: 26px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      box-shadow: 0 22px 50px rgba(148, 163, 184, 0.55);
+      padding: 22px 22px 18px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 780px) {
+      .review-card {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Left side: summary */
+    .summary-left {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .doc-chip-row {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 11px;
+    }
+
+    .doc-chip {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4f46e5;
+      border: 1px solid rgba(180, 198, 255, 0.6);
+    }
+
+    .doc-chip-warn {
+      background: #ffedd5;
+      color: #c05621;
+      border-color: #fed7aa;
+    }
+
+    .doc-id {
+      font-size: 12px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .summary-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .summary-sub {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .trust-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .trust-circle {
+      width: 85px;
+      height: 80px;
+      border-radius: 24px;
+      background: linear-gradient(145deg, #e0f2fe, #bbf7d0);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .trust-value {
+      font-size: 22px;
+      font-weight: 700;
+      color: #15803d;
+    }
+
+    .trust-label {
+      font-size: 11px;
+      margin-left: 8px;
+      letter-spacing: 0.12em;
+      color: #4b5563;
+    }
+
+    .trust-text {
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .checks-list {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: #f3f4ff;
+      font-size: 12px;
+    }
+
+    .checks-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 12px;
+    }
+
+    .checks-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 4px;
+    }
+
+    .checks-item span {
+      font-size: 11px;
+    }
+
+    .dot-green {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .dot-amber {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #facc15;
+    }
+
+    /* Right side: key fields */
+    .summary-right {
+      border-radius: 20px;
+      background: linear-gradient(135deg, #eef2ff, #fdf2ff);
+      padding: 14px 14px 10px;
+      box-shadow: 0 10px 28px rgba(148, 163, 184, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .right-heading {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #4b5563;
+    }
+
+    .field-list {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .field-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .field-label {
+      color: #6b7280;
+    }
+
+    .field-value {
+      font-weight: 500;
+      max-width: 55%;
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .hint-text {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #4b5563;
+    }
+
+    .highlight-box {
+      margin-top: 4px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.9);
+      font-size: 11px;
+      border: 1px dashed rgba(180, 170, 255, 0.8);
+    }
+
+    /* Action buttons */
+    .actions-row {
+      margin-top: 14px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      font-size: 12px;
+      align-items: center;
+    }
+
+    .left-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip-soft {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #f9fafb;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      color: #6b7280;
+      font-size: 11px;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .secondary-btn {
+      padding: 7px 14px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      background: #ffffff;
+      color: #4b5563;
+      cursor: pointer;
+    }
+
+    .secondary-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .primary-btn-submit {
+      padding: 7px 16px;
+      font-size: 13px;
+      border-radius: 999px;
+      border: none;
+      background: #111827;
+      color: #f9fafb;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .primary-btn-submit::after {
+      content: "✓";
+      font-size: 12px;
+    }
+
+    .primary-btn-submit:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 32px rgba(15, 23, 42, 0.35);
+    }
+
+    .footer-hint {
+      text-align: center;
+      font-size: 11px;
+      color: #6b7280;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Page title -->
+  <div class="site-title-wrap">
+    <h1 class="site-title-main">Summary</h1>
+    <p class="site-title-sub">
+      Make sure the key details look right. Once locked, this review becomes part of the audit trail.
+    </p>
+  </div>
+
+  <!-- Main card -->
+  <main class="main-wrap">
+    <section class="review-card">
+
+      <!-- Left: summary -->
+      <div class="summary-left">
+        <div>
+          <div class="doc-chip-row">
+            <div class="doc-chip">Bank statement</div>
+            <div class="doc-chip">3 months</div>
+            <div class="doc-chip doc-chip-warn">Reviewed with edits</div>
+          </div>
+          <div class="doc-id">DOC‑123 • Rahul Sharma • Jan 2025 – Mar 2025</div>
+        </div>
+
+        <div>
+          <div class="summary-title">This review looks ready to lock.</div>
+          <p class="summary-sub">
+            The system has processed all pages, applied checks, and captured your corrections.
+          </p>
+        </div>
+
+        <div class="trust-row">
+          <div class="trust-circle">
+            <div class="trust-value">88</div>
+            <div class="trust-label">Trust score</div>
+          </div>
+          <div class="trust-text">
+            Overall signal quality is high. A couple of fields were fixed by you and are now marked as human‑verified.
+          </div>
+        </div>
+
+        <div class="checks-list">
+          <div class="checks-title">What we checked</div>
+          <div class="checks-item">
+            <div class="dot-green"></div>
+            <span>Balance continuity across months</span>
+          </div>
+          <div class="checks-item">
+            <div class="dot-green"></div>
+            <span>Date order and missing days</span>
+          </div>
+          <div class="checks-item">
+            <div class="dot-amber"></div>
+            <span>Income jumps and one‑off spikes</span>
+          </div>
+          <div class="checks-item">
+            <div class="dot-green"></div>
+            <span>Conflicts with other documents (none found)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: key fields & actions -->
+      <div class="summary-right">
+        <div class="right-heading">Key fields you approved</div>
+        <div class="field-list">
+          <div class="field-row">
+            <span class="field-label">Account holder</span>
+            <span class="field-value">Rahul Sharma</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Account number</span>
+            <span class="field-value">XXXX1234</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Average monthly income</span>
+            <span class="field-value">₹80,000</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Date range</span>
+            <span class="field-value">Jan 2025 – Mar 2025</span>
+          </div>
+        </div>
+
+        <div class="hint-text">
+          If any of these look off, you can jump back to the review screen, fix them, and come back here.
+        </div>
+
+        <div class="highlight-box">
+          Once you lock this in, this document’s data and corrections will be saved as a
+          versioned record. Future model updates can learn from these edits.
+        </div>
+
+        <div class="actions-row">
+          <div class="left-actions">
+            <div class="chip-soft">Human‑verified</div>
+            <div class="chip-soft">Ready for export / scoring</div>
+          </div>
+          <div class="btn-row">
+            <button type="button" class="secondary-btn">Back to review</button>
+            <button type="button" class="primary-btn-submit">Lock this review</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+  </main>
+
+  <div class="footer-hint">
+    After locking, you can still see this review, but edits will create a new version in the history.
+  </div>
+</div>
+</body>
+</html>

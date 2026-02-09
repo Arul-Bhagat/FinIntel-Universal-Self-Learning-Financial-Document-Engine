@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Financial Document Review</title>
+  <style>
+    :root {
+      --bg: #fdfbff;
+      --bg-accent: #f4f4ff;
+      --surface: #ffffff;
+      --surface-soft: #f9f5ff;
+      --border: #e4ddff;
+
+      --text-main: #111827;
+      --text-sub: #6b7280;
+
+      --primary: #6366f1;
+      --primary-soft: #a5b4fc;
+      --accent-pink: #f9a8d4;
+      --accent-mint: #6ee7b7;
+      --accent-peach: #fed7aa;
+      --accent-sky: #7dd3fc;
+
+      --radius-lg: 18px;
+      --radius-sm: 10px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, #e0f2fe 0, transparent 55%),
+        radial-gradient(circle at top right, #fce7f3 0, transparent 50%),
+        radial-gradient(circle at bottom, #fef3c7 0, transparent 55%),
+        var(--bg);
+      color: var(--text-main);
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 24px;
+      margin: 12px;
+      border-radius: 20px;
+      background: linear-gradient(120deg, rgba(129, 140, 248, 0.2), rgba(244, 114, 182, 0.08));
+      border: 1px solid rgba(180, 170, 255, 0.6);
+      box-shadow: 0 18px 40px rgba(148, 163, 184, 0.25);
+    }
+
+    .top-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-circle {
+      border-radius: 999px;
+      padding: 6px 14px;
+      background: linear-gradient(135deg, #6366f1, #ec4899);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 650;
+      font-size: 13px;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .title {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      margin: 4px 0 0;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .primary-btn {
+      background: #111827;
+      color: #f9fafb;
+      border-radius: 999px;
+      padding: 8px 18px;
+      border: none;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.35);
+    }
+
+    .primary-btn::after {
+      content: "➜";
+      font-size: 12px;
+    }
+
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.38);
+    }
+
+    /* Main layout */
+    .layout {
+      flex: 1;
+      display: flex;
+      gap: 14px;
+      padding: 6px 16px 16px;
+    }
+
+    .left-panel {
+      width: 280px;
+      padding: 14px;
+      border-radius: 22px;
+      border: 1px dashed rgba(148, 163, 184, 0.6);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(6px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .right-panel {
+      flex: 1;
+      padding: 10px 4px 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .section-title {
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #4b5563;
+    }
+
+    /* Document card */
+    .doc-card {
+      display: flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #eef2ff, #fdf2ff);
+      border: none;
+      box-shadow: 0 10px 28px rgba(148, 163, 184, 0.4);
+    }
+
+    .doc-thumb {
+      width: 70px;
+      height: 90px;
+      border-radius: 16px;
+      background: conic-gradient(from 180deg at 50% 50%, #a5b4fc, #f9a8d4, #6ee7b7, #a5b4fc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      color: #f9fafb;
+      box-shadow: 0 10px 25px rgba(129, 140, 248, 0.5);
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      font-size: 13px;
+    }
+
+    .secondary-btn {
+      margin-top: 10px;
+      padding: 6px 12px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(255, 255, 255, 0.7);
+      color: #4b5563;
+      cursor: pointer;
+    }
+
+    .secondary-btn:hover {
+      background: #e5e7eb;
+    }
+
+    .quality-card {
+      padding: 12px;
+      border-radius: 18px;
+      background: #fdf2ff;
+      border: none;
+      font-size: 13px;
+    }
+
+    .quality-heading {
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+
+    .quality-meter {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .quality-good {
+      background: rgba(110, 231, 183, 0.3);
+      color: #047857;
+    }
+
+    /* Summary row (trust + checks) */
+    .summary-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .trust-score-card {
+      width: 230px;
+      padding: 14px;
+      border-radius: 22px;
+      background: linear-gradient(145deg, #eef2ff, #fef9c3);
+      border: none;
+      box-shadow: 0 14px 30px rgba(148, 163, 184, 0.5);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .trust-circle {
+      width: 110px;
+      height: 110px;
+      border-radius: 40px;
+      background: #ffffffdd;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 4px;
+        width: 50%;         /* Must have a specified width */
+  margin-left: auto;
+  margin-right: auto;
+  /* or shorthand */
+  margin: 0 auto;
+    }
+
+    .trust-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #16a34a;
+    }
+
+    .trust-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: #6b7280;
+    }
+
+    .trust-info {
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    .checks-grid {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+
+    .check-card {
+      padding: 10px 12px;
+      border-radius: 18px;
+      background: #ffffffb3;
+      border: 1px solid rgba(209, 213, 219, 0.7);
+      backdrop-filter: blur(5px);
+      font-size: 13px;
+    }
+
+    .check-title {
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .check-pass {
+      border-color: rgba(110, 231, 183, 0.8);
+    }
+
+    .check-warn {
+      border-color: rgba(252, 211, 77, 0.9);
+    }
+
+    /* Table */
+    .table-header {
+      margin: 6px 2px 8px;
+    }
+
+    .table-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .table-wrapper {
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(209, 213, 219, 0.8);
+      box-shadow: 0 14px 34px rgba(148, 163, 184, 0.35);
+      overflow: hidden;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      font-size: 13px;
+    }
+
+    thead {
+      background: #f3f4ff;
+    }
+
+    th, td {
+      padding: 9px 10px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+
+    th {
+      text-align: left;
+      font-size: 12px;
+      color: #4b5563;
+    }
+
+    tbody tr:nth-child(even) {
+      background: #faf5ff;
+    }
+
+    tbody tr:hover {
+      background: #e0f2fe;
+      transition: background 0.15s ease-out;
+    }
+
+    .row-issue {
+      background: #fff7ed;
+    }
+
+    .badge {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 11px;
+    }
+
+    .badge-low {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .badge-med {
+      background: #fef3c7;
+      color: #b45309;
+    }
+
+    .badge-high {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .issue-yes {
+      color: #b91c1c;
+      font-weight: 600;
+    }
+
+    .issue-no {
+      color: #16a34a;
+      font-weight: 600;
+    }
+
+    input.field-input,
+    select.field-select {
+      width: 100%;
+      padding: 5px 7px;
+      font-size: 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      background: #f9fafb;
+    }
+
+    input.field-input:focus,
+    select.field-select:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.3);
+    }
+
+    /* Field hover details */
+    .field-main {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .field-info {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 1px solid #d4d4d8;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: #6b7280;
+    }
+
+    .field-detail {
+      position: absolute;
+      left: 0;
+      top: 140%;
+      min-width: 220px;
+      max-width: 260px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: #111827;
+      color: #e5e7eb;
+      font-size: 11px;
+      line-height: 1.4;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, 0.85);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(4px);
+      transition: opacity 0.15s ease-out, transform 0.15s ease-out;
+      z-index: 10;
+    }
+
+    .field-main:hover .field-detail {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Footer stats */
+    .footer-stats {
+      display: flex;
+      gap: 10px;
+      padding: 10px 18px 16px;
+    }
+.button-link {
+  font-size: 15px;
+  font-weight: bold;
+      color: #111827;
+      text-decoration: none;
+      padding: 12px 25px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.8);
+      border: 1px solid rgba(209, 213, 219, 0.8);
+}
+
+.button-link:hover {
+  background-color: #c9d1f9; /* Darker blue on hover */
+}
+
+    .stat-card {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(209, 213, 219, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+
+    .stat-label {
+      color: #6b7280;
+    }
+
+    .stat-value {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .stat-warn {
+      color: #f97316;
+    }
+
+    @media (max-width: 900px) {
+      .layout {
+        flex-direction: column;
+      }
+      .left-panel {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Top bar -->
+  <header class="top-bar">
+    <div class="top-left">
+      <div class="logo-circle">FI DOC</div>
+      <div>
+        <h1 class="title">Document Review</h1>
+        <p class="subtitle">ID: DOC-123 • Type: Bank Statement • Status: Needs review</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <a href="final.html" class="button-link">Summary</a>
+    </div>
+  </header>
+
+  <!-- Main layout -->
+  <main class="layout">
+    <!-- Left panel always visible -->
+    <aside class="left-panel">
+      <div class="section-title">Document at a glance</div>
+      <div class="doc-card">
+        <div class="doc-thumb">
+          PDF
+        </div>
+        <div class="doc-meta">
+          <p><strong>Holder:</strong> <span class="doc-meta-holder">Rahul Sharma</span></p>
+          <p><strong>Range:</strong> <span class="doc-meta-range">Jan 2025 – Mar 2025</span></p>
+          <p><strong>Pages:</strong> <span class="doc-meta-pages">4</span></p>
+          <button class="secondary-btn">Open original</button>
+        </div>
+      </div>
+
+      <div class="quality-card">
+        <div class="quality-heading">Document quality</div>
+        <div class="quality-meter quality-good">
+          Good scan
+        </div>
+        <p style="margin-top:6px;">
+          Text is clear, edges are visible, and contrast is high enough for accurate reading.
+        </p>
+      </div>
+    </aside>
+
+    <!-- Right panel -->
+    <section class="right-panel">
+
+      <!-- Summary row -->
+      <div class="summary-row">
+        <div class="trust-score-card">
+          <div class="trust-circle">
+            <div class="trust-value">82</div>
+            <div class="trust-label">Trust score</div>
+          </div>
+          <div class="trust-info">
+            Most fields look consistent. We flagged a couple of lines for a quick human check.
+          </div>
+        </div>
+
+        <div class="checks-grid">
+          <div class="check-card check-pass">
+            <div class="check-title">Balance flow</div>
+            <p>Closing balances connect smoothly between months.</p>
+          </div>
+          <div class="check-card check-pass">
+            <div class="check-title">Dates in order</div>
+            <p>Transactions appear in a clean, chronological timeline.</p>
+          </div>
+          <div class="check-card check-warn">
+            <div class="check-title">Income spike</div>
+            <p>Recent credits are higher than usual. Worth a quick glance.</p>
+          </div>
+          <div class="check-card">
+            <div class="check-title">Cross‑document</div>
+            <p>No conflicts with other uploaded documents right now.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Table header -->
+      <div class="table-header">
+        <div class="table-title">What we understood</div>
+      </div>
+
+      <!-- Extraction table -->
+      <div class="table-wrapper">
+        <table class="extract-table">
+          <thead>
+          <tr>
+            <th>Field</th>
+            <th>Detected value</th>
+            <th>Confidence</th>
+            <th>Issue?</th>
+            <th>Your correction</th>
+            <th>Why changed?</th>
+          </tr>
+          </thead>
+          <tbody id="fields-body">
+          <tr class="row-issue">
+            <td>
+              <div class="field-main">
+                Account holder
+                <span class="field-info">i</span>
+                <div class="field-detail">
+                  Full legal name of the person or company that owns this account.
+                </div>
+              </div>
+            </td>
+            <td>Rahul Shama</td>
+            <td><span class="badge badge-med">Medium</span></td>
+            <td><span class="issue-yes">Yes</span></td>
+            <td><input class="field-input" type="text" value="Rahul Sharma" /></td>
+            <td>
+              <select class="field-select">
+                <option value="">Select reason</option>
+                <option>Spelling / formatting</option>
+                <option>Wrong number</option>
+                <option>Wrong field</option>
+                <option>Missing info</option>
+                <option>Other</option>
+              </select>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <div class="field-main">
+                Account number
+                <span class="field-info">i</span>
+                <div class="field-detail">
+                  Masked or full number used to identify this bank account.
+                </div>
+              </div>
+            </td>
+            <td>XXXX1234</td>
+            <td><span class="badge badge-high">High</span></td>
+            <td><span class="issue-no">No</span></td>
+            <td><input class="field-input" type="text" value="XXXX1234" /></td>
+            <td>
+              <select class="field-select">
+                <option value="">Select reason</option>
+                <option>Spelling / formatting</option>
+                <option>Wrong number</option>
+                <option>Wrong field</option>
+                <option>Missing info</option>
+                <option>Other</option>
+              </select>
+            </td>
+          </tr>
+          <tr class="row-issue">
+            <td>
+              <div class="field-main">
+                Monthly income
+                <span class="field-info">i</span>
+                <div class="field-detail">
+                  Typical credited salary or income for this account holder per month.
+                </div>
+              </div>
+            </td>
+            <td>₹8,000</td>
+            <td><span class="badge badge-low">Low</span></td>
+            <td><span class="issue-yes">Yes</span></td>
+            <td><input class="field-input" type="text" value="₹80,000" /></td>
+            <td>
+              <select class="field-select">
+                <option value="">Select reason</option>
+                <option>Spelling / formatting</option>
+                <option>Wrong number</option>
+                <option>Wrong field</option>
+                <option>Missing info</option>
+                <option>Other</option>
+              </select>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+  </main>
+
+  <!-- Footer stats -->
+  <footer class="footer-stats">
+    <div class="stat-card">
+      <span class="stat-label">Docs today</span>
+      <span class="stat-value">124</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Avg trust</span>
+      <span class="stat-value">79</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-label">Need review</span>
+      <span class="stat-value stat-warn">18</span>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
